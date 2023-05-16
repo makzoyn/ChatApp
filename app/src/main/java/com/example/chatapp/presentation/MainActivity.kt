@@ -8,12 +8,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chatapp.R
 import com.example.chatapp.data.models.Message
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var rvMessages: RecyclerView
-    private lateinit var btnSend: Button
-    private lateinit var btnReceive: Button
+    private lateinit var btnSend: FloatingActionButton
     private lateinit var etInputMessage: EditText
 
     private lateinit var adapter: MessagesAdapter
@@ -31,14 +31,13 @@ class MainActivity : AppCompatActivity() {
         viewModel.messages.observe(this) {
             adapter.messages = it
         }
-
+        viewModel.getRunnable()
         setClickListeners()
     }
 
     private fun initViews() {
         rvMessages = findViewById(R.id.rvMessages)
         btnSend = findViewById(R.id.btnSend)
-        btnReceive = findViewById(R.id.btnReceive)
         etInputMessage = findViewById(R.id.etInputMessage)
     }
 
@@ -51,9 +50,6 @@ class MainActivity : AppCompatActivity() {
             etInputMessage.text.clear()
         }
 
-        btnReceive.setOnClickListener {
-            viewModel.receiveMessage()
-        }
     }
 
     companion object {

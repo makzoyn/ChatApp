@@ -38,7 +38,7 @@ class MainViewModel : ViewModel() {
     }
 
     val handler = android.os.Handler(Looper.getMainLooper())
-    val runnable = object : Runnable {
+    private val runnable = object : Runnable {
         override fun run() {
             viewModelScope.launch {
                 ApiFactory.apiService.receiveMessage().let {
@@ -60,8 +60,13 @@ class MainViewModel : ViewModel() {
         }
     }
 
+    fun getRunnable(): Runnable {
+        return runnable
+    }
     init {
         handler.postDelayed(runnable, 5000)
     }
+
+
 }
 
