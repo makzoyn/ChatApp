@@ -53,7 +53,7 @@ class MainViewModel : ViewModel() {
                     }
                 }
             }
-            handler.postDelayed(this, 5000)
+            handler.postDelayed(this, 1000)
         }
     }
 
@@ -61,7 +61,7 @@ class MainViewModel : ViewModel() {
         return runnable
     }
     init {
-        handler.postDelayed(runnable, 5000)
+        handler.postDelayed(runnable, 1000)
     }
 
 
