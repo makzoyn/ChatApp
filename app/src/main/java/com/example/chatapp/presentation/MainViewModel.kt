@@ -27,10 +27,7 @@ class MainViewModel : ViewModel() {
             ApiFactory
                 .apiService
                 .sendMessage(SENDER, message.recipient, message.text).let {
-                    if (it.isSuccessful) {
-                        messageList.add(message)
-                        _messages.postValue(messageList.toList())
-                    } else {
+                    if (!it.isSuccessful) {
                         Log.d("MainViewModel", "Error ${it.errorBody()}")
                     }
                 }
@@ -42,9 +39,9 @@ class MainViewModel : ViewModel() {
         override fun run() {
             viewModelScope.launch {
                 ApiFactory.apiService.receiveMessage().let {
+                    val message = it.body()
                     if (it.isSuccessful) {
-                        val message = it.body()
-                        if (message != null && message.id != lastMessageId) {
+                        if (message != null  && message.id != lastMessageId) {
                             lastMessageId = message.id
                             messageList.add(message)
                         }

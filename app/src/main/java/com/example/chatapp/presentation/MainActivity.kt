@@ -2,7 +2,6 @@ package com.example.chatapp.presentation
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Button
 import android.widget.EditText
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
@@ -31,8 +30,9 @@ class MainActivity : AppCompatActivity() {
         viewModel.messages.observe(this) {
             adapter.messages = it
         }
-        viewModel.getRunnable()
+
         setClickListeners()
+        viewModel.getRunnable()
     }
 
     private fun initViews() {
