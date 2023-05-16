@@ -1,5 +1,6 @@
 package com.example.chatapp.presentation
 
+import android.os.Looper
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -9,11 +10,15 @@ import com.example.chatapp.data.models.Message
 import com.example.chatapp.data.network.ApiFactory
 import kotlinx.coroutines.launch
 
+
 class MainViewModel : ViewModel() {
     private val _messages = MutableLiveData<List<Message>>()
 
     private val messageList = mutableListOf<Message>()
-
+    private var lastMessageId: Int? = null
+    companion object {
+        private const val SENDER = "sender"
+    }
     val messages: LiveData<List<Message>>
         get() = _messages
 
@@ -32,26 +37,31 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    fun receiveMessage() {
-        viewModelScope.launch {
-            ApiFactory.apiService.receiveMessage().let {
-                if (it.isSuccessful) {
-                    val message = it.body()
-                    Log.d("message", message.toString())
-                    if (message != null) {
-                        messageList.add(message)
+    val handler = android.os.Handler(Looper.getMainLooper())
+    val runnable = object : Runnable {
+        override fun run() {
+            viewModelScope.launch {
+                ApiFactory.apiService.receiveMessage().let {
+                    if (it.isSuccessful) {
+                        val message = it.body()
+                        if (message != null && message.id != lastMessageId) {
+                            lastMessageId = message.id
+                            messageList.add(message)
+                        }
+                        Log.d("messageList", messageList.toString())
+                        _messages.value = messageList
+                        Log.d("_message", _messages.value.toString())
+                    } else {
+                        Log.d("MainViewModel", "Error ${it.errorBody()}")
                     }
-                    Log.d("messageList", messageList.toString())
-                    _messages.value = messageList
-                    Log.d("_message", _messages.value.toString())
-                } else {
-                    Log.d("MainViewModel", "Error ${it.errorBody()}")
                 }
             }
+            handler.postDelayed(this, 5000)
         }
     }
 
-    companion object {
-        private const val SENDER = "sender"
+    init {
+        handler.postDelayed(runnable, 5000)
     }
 }
+

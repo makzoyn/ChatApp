@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
         viewModel.messages.observe(this) {
             adapter.messages = it
         }
-
+        viewModel.runnable
         setClickListeners()
     }
 
@@ -51,9 +51,7 @@ class MainActivity : AppCompatActivity() {
             etInputMessage.text.clear()
         }
 
-        btnReceive.setOnClickListener {
-            viewModel.receiveMessage()
-        }
+
     }
 
     companion object {
